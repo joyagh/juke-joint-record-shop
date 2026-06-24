@@ -1,5 +1,6 @@
 package org.yearup.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.yearup.models.CartItem;
 import org.yearup.models.Product;
@@ -56,10 +57,12 @@ public class ShoppingCartService
         }
         return getByUserId(userId);
     }
-
+@Transactional
     public ShoppingCart updateQuantity(int userId, int productId, int quantity)
     {
         CartItem existing = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
+        System.out.println("Found cart item: " + existing);
+        System.out.println("UserId: " + userId + " ProductId: " + productId);
         if (existing != null)
         {
             existing.setQuantity(quantity);
