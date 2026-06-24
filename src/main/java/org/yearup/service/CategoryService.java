@@ -31,12 +31,13 @@ public class CategoryService
     public Category create(Category category)
     {
         // create a new category
-        return null;
+        return categoryRepository.save(category);
     }
 
-    public Category update(int categoryId, Category category)
+    public void update(int categoryId, Category category)
     {
-        return categoryRepository.save(category);
+        category.setCategoryId(categoryId);
+        categoryRepository.save(category);
     }
 
     public void delete(int categoryId)
