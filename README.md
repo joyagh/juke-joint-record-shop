@@ -1,4 +1,5 @@
-# 🎵 Juke Joint Record Shop
+# 🎵 Juke Joint Record Shop 
+# ![Juke](screenshots/juke_joint.png)
 
 A full-stack e-commerce application for a vinyl record shop, built as a capstone project for Year Up United's Java Focus Academy. The backend is a Spring Boot REST API connected to a MySQL database, with a custom-styled vanilla JS frontend.
 
