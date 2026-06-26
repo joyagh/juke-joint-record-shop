@@ -16,21 +16,18 @@ import java.security.Principal;
 @RequestMapping("orders")
 @CrossOrigin
 @PreAuthorize("isAuthenticated()")
-public class OrderController
-{
+public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
 
     @Autowired
-    public OrderController(OrderService orderService, UserService userService)
-    {
+    public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
         this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<Order> checkout(Principal principal)
-    {
+    public ResponseEntity<Order> checkout(Principal principal) {
         String userName = principal.getName();
         User user = userService.getByUserName(userName);
         int userId = user.getId();

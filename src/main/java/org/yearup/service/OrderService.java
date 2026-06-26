@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class OrderService
-{
+public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final ShoppingCartService shoppingCartService;
@@ -23,8 +22,7 @@ public class OrderService
                         OrderLineItemRepository orderLineItemRepository,
                         ShoppingCartService shoppingCartService,
                         UserService userService,
-                        ProfileService profileService)
-    {
+                        ProfileService profileService) {
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.shoppingCartService = shoppingCartService;
@@ -33,12 +31,11 @@ public class OrderService
     }
 
     @Transactional
-    public Order checkout(int userId)
-    {
-        // get  user profile for address info
+    public Order checkout(int userId) {
+
         Profile profile = profileService.getByUserId(userId);
 
-        // create  order
+
         Order order = new Order();
         order.setUserId(userId);
         order.setDate(LocalDateTime.now());
@@ -48,15 +45,14 @@ public class OrderService
         order.setZip(profile.getZip());
         order.setShippingAmount(BigDecimal.ZERO);
 
-        // save the order to get the  order id
+
         Order savedOrder = orderRepository.save(order);
 
-        // get the user's cart
+
         ShoppingCart cart = shoppingCartService.getByUserId(userId);
 
-        // create a line item for each product in the cart
-        for (ShoppingCartItem item : cart.getItems().values())
-        {
+
+        for (ShoppingCartItem item : cart.getItems().values()) {
             OrderLineItem lineItem = new OrderLineItem();
             lineItem.setOrderId(savedOrder.getOrderId());
             lineItem.setProductId(item.getProduct().getProductId());
@@ -66,7 +62,7 @@ public class OrderService
             orderLineItemRepository.save(lineItem);
         }
 
-        // clear cart
+
         shoppingCartService.clearCart(userId);
 
         return savedOrder;

@@ -9,25 +9,21 @@ import org.yearup.models.ShoppingCartItem;
 import org.yearup.repository.ShoppingCartRepository;
 
 @Service
-public class ShoppingCartService
-{
-    // a shopping cart is built from cart rows plus a product lookup for each row
+public class ShoppingCartService {
+
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductService productService;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService)
-    {
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productService = productService;
     }
 
-    public ShoppingCart getByUserId(int userId)
-    {
-        // load the user's cart rows, look up each product, and build the ShoppingCart
+    public ShoppingCart getByUserId(int userId) {
+
         ShoppingCart cart = new ShoppingCart();
         var cartItems = shoppingCartRepository.findByUserId(userId);
-        for (CartItem cartItem : cartItems)
-        {
+        for (CartItem cartItem : cartItems) {
             Product product = productService.getById(cartItem.getProductId());
             ShoppingCartItem item = new ShoppingCartItem();
             item.setProduct(product);
@@ -37,42 +33,35 @@ public class ShoppingCartService
         return cart;
     }
 
-    // add additional methods here
 
-    public ShoppingCart addProduct(int userId, int productId)
-    {
+    public ShoppingCart addProduct(int userId, int productId) {
         CartItem existing = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
-        if (existing == null)
-        {
+        if (existing == null) {
             CartItem newItem = new CartItem();
             newItem.setUserId(userId);
             newItem.setProductId(productId);
             newItem.setQuantity(1);
             shoppingCartRepository.save(newItem);
-        }
-        else
-        {
+        } else {
             existing.setQuantity(existing.getQuantity() + 1);
             shoppingCartRepository.save(existing);
         }
         return getByUserId(userId);
     }
-@Transactional
-    public ShoppingCart updateQuantity(int userId, int productId, int quantity)
-    {
+
+    @Transactional
+    public ShoppingCart updateQuantity(int userId, int productId, int quantity) {
         CartItem existing = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
         System.out.println("Found cart item: " + existing);
         System.out.println("UserId: " + userId + " ProductId: " + productId);
-        if (existing != null)
-        {
+        if (existing != null) {
             existing.setQuantity(quantity);
             shoppingCartRepository.save(existing);
         }
         return getByUserId(userId);
     }
 
-    public ShoppingCart clearCart(int userId)
-    {
+    public ShoppingCart clearCart(int userId) {
         shoppingCartRepository.deleteByUserId(userId);
         return getByUserId(userId);
     }
